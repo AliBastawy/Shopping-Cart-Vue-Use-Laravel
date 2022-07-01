@@ -1,0 +1,121 @@
+<template>
+  <div class="home">
+    <div></div>
+    <div class="products">
+      <div class="shop-container">
+        <ShopCart :item=item :key="item.id" v-for="item in items"/>
+      </div>
+    </div>
+    <div class="checkout">
+      <span> {{ cartItems }} </span>
+      <h3>
+        $ {{ cart_Total }}
+        <router-link to="/cart">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </router-link>
+      </h3>
+      <router-link to="/Checkout">Checkout</router-link>
+    </div>
+  </div>
+</template>
+
+<script>
+// @ is an alias to /src
+import ShopCart from '@/components/ShopCart.vue'
+// import items from "../data/items.js"
+
+export default {
+  name: 'Home',
+  data() {
+    return {
+      items: []
+    }
+  },
+  components: {
+    ShopCart,
+  },
+  mounted() {
+    this.fetchItems()
+    // this.deleteItems()
+  },
+  methods: {
+    async fetchItems() {
+        const res = await fetch(this.$store.getters.laravelWeb + "api/products");
+        const data = await res.json();
+        console.log('🚀 ~ file: ShopCart.vue ~ line 88 ~ fetchItems ~ data', data)
+        this.items = data.products;
+    },
+    // async deleteItems() {
+    //     fetch('http://localhost:8080/api/products/1', {
+    //       method: 'DELETE',
+    //     })
+    //     .then(res => res.text()) // or res.json()
+    //     .then(res => console.log(res))
+    //     // const res = await fetch("http://localhost:8080/api/products");
+    //     // const data = await res.json();
+    //     // console.log('🚀 ~ file: ShopCart.vue ~ line 88 ~ fetchItems ~ data', data)
+    //     // this.items = data.products;
+    // },
+  },
+  computed: {
+    cart_Total() {
+      return this.$store.getters.cartTotal
+    },
+    cartItems() {
+      let items = this.$store.getters.cartItems
+      let items_count = 0
+      items.forEach(element => {
+        items_count += element.order
+      });
+      return items_count
+    },
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+.home {
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 5fr 1fr;
+  padding-bottom: 15px;
+  border-bottom: 2px solid;
+}
+.products {
+  border-width: 0px 2px;
+  border-style: solid;
+}
+.checkout {
+  padding-right: 10px;
+  span {
+    border-radius: 50%;
+    background-color: orange;
+    font-weight: bold;
+    padding: 5px;
+  }
+  h3 {
+    margin-top: 15px;
+  }
+  a {
+    padding: 10px;
+    display: inline-block;
+    background-image: linear-gradient(to right, #D98014, #AD3970);
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+}
+.shop-container {
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    margin-right: 10px;
+    padding-top: 30px;
+}
+</style>
