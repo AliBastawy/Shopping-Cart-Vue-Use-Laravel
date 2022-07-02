@@ -46,14 +46,6 @@ export default {
     }
   },
   methods: {
-    // async submit() {
-    //   this.items.forEach(element => {
-    //     this.lineItems.push({
-    //       price: element.priceID,
-    //       quantity: element.order
-    //     })
-    //   })
-    // },
     showCheckout(e) {
       e.preventDefault()
       document.querySelector('.form-container').classList.add('display')
@@ -94,7 +86,21 @@ button {
   position: relative;
   width: 100%;
   height: 100%;
-  margin-top: 80px;
+  padding-top: 80px;
+}
+.check:after {
+  background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjTUTpAPRiYYur-SNmkPnvWP2LnY_rnURSLw&usqp=CAU);
+  content: "";
+  opacity: 0.5;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;
+  background-position: center;
+  background-attachment: fixed;
+  background-size: contain;
 }
 
 .cart-info, .form-container {

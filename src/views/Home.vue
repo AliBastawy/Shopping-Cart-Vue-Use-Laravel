@@ -71,8 +71,20 @@ export default {
   border-bottom: 2px solid;
 }
 .products {
-  border-width: 0px 2px;
-  border-style: solid;
+  position: relative;
+}
+.products:after {
+  content: "";
+  background-image: url(https://static.vecteezy.com/system/resources/thumbnails/001/225/154/small/black-low-poly-geometric-background.jpg);
+  opacity: 0.5;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;
+  background-position: center;
+  background-attachment: fixed;
 }
 .checkout {
   padding-right: 10px;
@@ -98,10 +110,12 @@ export default {
   }
 }
 .shop-container {
-    flex-wrap: wrap;
-    display: flex;
-    justify-content: center;
-    margin-right: 10px;
-    padding-top: 30px;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+  margin-right: 10px;
+  padding-top: 30px;
+  padding-bottom: 5px;
+  border-bottom: 5px solid;
 }
 </style>
