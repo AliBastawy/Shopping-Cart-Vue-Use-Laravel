@@ -22,7 +22,6 @@
 <script>
 // @ is an alias to /src
 import ShopCart from '@/components/ShopCart.vue'
-// import items from "../data/items.js"
 
 export default {
   name: 'Home',
@@ -36,26 +35,13 @@ export default {
   },
   mounted() {
     this.fetchItems()
-    // this.deleteItems()
   },
   methods: {
     async fetchItems() {
         const res = await fetch(this.$store.getters.laravelWeb + "api/products");
         const data = await res.json();
-        console.log('🚀 ~ file: ShopCart.vue ~ line 88 ~ fetchItems ~ data', data)
         this.items = data.products;
     },
-    // async deleteItems() {
-    //     fetch('http://localhost:8080/api/products/1', {
-    //       method: 'DELETE',
-    //     })
-    //     .then(res => res.text()) // or res.json()
-    //     .then(res => console.log(res))
-    //     // const res = await fetch("http://localhost:8080/api/products");
-    //     // const data = await res.json();
-    //     // console.log('🚀 ~ file: ShopCart.vue ~ line 88 ~ fetchItems ~ data', data)
-    //     // this.items = data.products;
-    // },
   },
   computed: {
     cart_Total() {

@@ -46,7 +46,7 @@
 
       </div>
       <div class="col s12 place-order-button-block">
-        <button class="submit btn col s12" id="submit" @click="handleSubmit" style="margin-top: 10px;">
+        <button class="submit btn col s12" id="submit" @click="handleSubmit" style="margin: 17px 0;">
           <div class="spinner hidden" id="spinner"></div>
           <span id="button-text">Pay with Credit ${{ cart_Total }}</span>
         </button>
@@ -103,7 +103,6 @@ export default {
       this.stripeValidationError = event.error ? event.error.message : "";
     },
     createAndMountFormElements() {
-      // this.stripe = window.Stripe("pk_test_51LEwj8KwHhxzhn4R99v38nidybnhEP5g2HYthZJgBPTHcIqwhuSNXZr7LxSTNzJgyK6NwvlWs0KbfLCPbB061Kuo000vuoCdTn")
       var elements  = this.stripe.elements();
       this.cardNumberElement = elements.create("cardNumber");
       this.cardNumberElement.mount("#card-number-element");
@@ -117,7 +116,6 @@ export default {
       this.cardNumberElement.onChange = this.setValidationError;
       this.cardExpiryElement.onChange = this.setValidationError;
       this.cardCvcElement.onChange = this.setValidationError;
-      console.log(elements)
     },
     handleSubmit(e) {
       this.setLoading(true);
@@ -131,6 +129,7 @@ export default {
         })
       })
 
+      // Create Payment Method
       this.stripe.createPaymentMethod({
         type: 'card',
         card: this.cardNumberElement,
@@ -138,9 +137,10 @@ export default {
           email: this.email
         },
       }).then(result => {
-        console.log(result)
         if (result.error) {
-          alert(result.error)
+          // Show error from server on creating payment method
+          document.querySelector('#error-message').innerHTML = `<h5>${result.error}</h5>`
+          this.$router.push("/error");
         } else {
           fetch(this.$store.getters.laravelWeb + "api/checkout2", {
             method: "POST",
@@ -152,40 +152,43 @@ export default {
               lineItems: this.lineItems,
               url: window.location.href
             })
-          }).then(function(result) {
-            // Handle server response (see Step 4)
-            result.json().then(function(json) {
-              console.log('🚀 ~ file: Checkout.vue ~ line 178 ~ result.json ~ json', json)
-              if (json.error) {
-              // Show error from server on payment form
-              } else if (json.requires_action) {
+          }).then(res => res.json()).then(result => {
+              if (result.error) {
+                // Show error from server on payment form
+                document.querySelector('#error-message').innerHTML = `<h5>${result.error}</h5>`
+                this.$router.push("/error");
+              } else if (result.requires_action) {
                 // Use Stripe.js to handle required card action
                 this.stripe.handleCardAction(
-                  json.payment_intent_client_secret
-                ).then(reuslt => {
-                  console.log('🚀 ~ file: Checkout.vue ~ line 214 ~ result.json ~ reuslt', reuslt)
-                  if (result.error) {
+                  result.payment_intent_client_secret
+                ).then(cardActionResult => {
+                  if (cardActionResult.error) {
                     // Show error in payment form
+                    document.querySelector('#error-message').innerHTML = `<h5>${cardActionResult.error}</h5>`
+                    this.$router.push("/error");
                   } else {
                     // The card action has been handled
                     // The PaymentIntent can be confirmed again on the server
-                    fetch('http://localhost:8000/api/checkout2', {
+                    fetch(this.$store.getters.laravelWeb + "api/checkout2", {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ payment_intent_id: result.paymentIntent.id })
-                    }).then(function(confirmResult) {
-                      console.log('🚀 ~ file: Checkout.vue ~ line 224 ~ result.json ~ confirmResult', confirmResult)
+                      body: JSON.stringify({ payment_intent_id: cardActionResult.paymentIntent.id })
+                    }).then(confirmResult => {
                       return confirmResult.json();
-                })
-              }
-            })
-          } else {
-            alert(json)
-          }
+                    }).then(() => {
+                      this.$router.push("/success");
+                    })
+                  }
+              })
+            } else {
+              document.querySelector('#error-message').innerHTML = '<h5>Payment Done Successfully</h5>'
+              // Remove All items from Local Storage
+              this.$store.commit('removeAllProducts')
+              this.$router.push("/success");
+            }
+            this.setLoading(false);
           })
-        })
         }
-        this.setLoading(false);
       })
     },
     // Show a spinner on payment submission
@@ -210,8 +213,8 @@ export default {
 </script>
 
 <style scoped>
-@import './stripe.css';
-@import './materialize.min.css';
+@import '../style/stripe.css';
+@import '../style/materialize.min.css';
 /* Variables */
 * {
   box-sizing: border-box;
@@ -408,5 +411,9 @@ button:disabled {
 .right button:after {
   display: inline-block;
   content: "\00d7"; /* This will render the 'X' */
+}
+
+#error-message {
+  text-align: center;
 }
 </style>

@@ -7,6 +7,7 @@ function updateLocalStorage(cart) {
 export default createStore({
   state: {
     cart: [],
+    // laravelHost: 'http://127.0.0.1:8000/'
     laravelHost: 'https://shoppingcartlaravel.herokuapp.com/'
   },
   getters: {
@@ -21,15 +22,15 @@ export default createStore({
     laravelWeb: state => state.laravelHost
   },
   mutations: {
-      addToCart: (state, product) => {
-        const item = state.cart.find(i => i.id === product.id)
-        if (item) {
-          item.order++
-        }
-        else {
-          state.cart.push({...product, order: 1})
-        }
-        updateLocalStorage(state.cart)
+    addToCart: (state, product) => {
+      const item = state.cart.find(i => i.id === product.id)
+      if (item) {
+        item.order++
+      }
+      else {
+        state.cart.push({...product, order: 1})
+      }
+      updateLocalStorage(state.cart)
     },
     removeFromCart: (state, product) => {
       const item = state.cart.find(i => i.id === product.id)
@@ -43,9 +44,11 @@ export default createStore({
     },
     updateCartFromLocalStorage : (state) => {
       const cart = localStorage.getItem('cart')
-      console.log(cart)
       if (cart)
         state.cart = JSON.parse(cart)
+    },
+    removeAllProducts: () => {
+      updateLocalStorage([])
     }
   },
   actions: {
