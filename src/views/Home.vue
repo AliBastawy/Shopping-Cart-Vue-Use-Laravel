@@ -67,7 +67,6 @@ export default {
   align-items: center;
   display: grid;
   grid-template-columns: 1fr 5fr 1fr;
-  padding-bottom: 15px;
   border-bottom: 2px solid;
 }
 .products {
@@ -116,6 +115,5 @@ export default {
   margin-right: 10px;
   padding-top: 30px;
   padding-bottom: 5px;
-  border-bottom: 5px solid;
 }
 </style>
