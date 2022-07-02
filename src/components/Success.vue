@@ -7,14 +7,21 @@
     <div class="info">
       <h5>Your payment done successfully</h5>
       <h5>Thanks for using our App</h5>
-      <h5><router-link to="/">Return To Home Page</router-link></h5>
+      <h5>
+        <button @click="changeLocation">Return To Home Page</button>
+      </h5>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Success'
+  name: 'Success',
+  methods: {
+    changeLocation() {
+      location.replace('/');
+    }
+  }
 }
 </script>
 
@@ -30,5 +37,8 @@ export default {
 }
 .header img {
   width: 5%;
+}
+button {
+  color: #039be5;
 }
 </style>

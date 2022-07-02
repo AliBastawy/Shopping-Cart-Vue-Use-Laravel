@@ -7,7 +7,9 @@
     <div class="info">
       <h5>Your payment done unsuccessfully</h5>
       <h5>Check your balance &amp; Enter your card details correctly</h5>
-      <h5><router-link to="/Checkout">Return To Checkout Page</router-link></h5>
+      <h5>
+        <router-link to="/Checkout">Return To Checkout Page</router-link>
+      </h5>
     </div>
   </div>
 </template>

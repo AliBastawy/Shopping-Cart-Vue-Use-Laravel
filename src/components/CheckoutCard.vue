@@ -92,7 +92,7 @@ export default {
   },
   computed: {
     cart_Total() {
-      return this.$store.getters.cartTotal
+      return (this.$store.getters.cartTotal * 1.2).toFixed(2)
     },
     cartItems() {
       return this.$store.getters.cartItems
@@ -184,7 +184,9 @@ export default {
               document.querySelector('#error-message').innerHTML = '<h5>Payment Done Successfully</h5>'
               // Remove All items from Local Storage
               this.$store.commit('removeAllProducts')
+              // location.reload();
               this.$router.push("/success");
+              // location.replace('/success');
             }
             this.setLoading(false);
           })
